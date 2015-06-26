@@ -18,7 +18,6 @@ class limits (
   $confdir         = $::limits::params::confdir,
   $conffile        = $::limits::params::conffile,
   $customized_file = $::limits::params::customized_file,
-  $options,
 ) inherits ::limits::params {
 
   # validate parameters here

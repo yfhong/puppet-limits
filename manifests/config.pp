@@ -4,18 +4,10 @@
 #
 class limits::config {
 
-  validate_array($::limits::options)
-  $lines = $::limits::options
+  $entries = hiera_hash('limits::entries', undef)
 
-  file { $::limits::confdir:
-    ensure => 'directory',
-  }
-
-  file { $::limits::customized_file:
-    ensure  => 'present',
-    owner   => 'root',
-    group   => $::limits::params::root_group,
-    mode    => '0640',
-    content => template('limits/99-customization.conf.erb'),
+  if ($entries) {
+    validate_hash($entries)
+    create_resources('limits::domain', $entries)
   }
 }
