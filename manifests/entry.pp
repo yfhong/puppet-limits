@@ -59,17 +59,29 @@ define limits::entry (
   # path for setting
   $path_with_value = "domain[.='${domain}'][./type='${type}' and ./item='${item}' and ./value='${value}']"
 
-  augeas { "${entry_name}":
-    context => $context,
-    onlyif  => "match ${path_with_value} size == 0",
-    changes => [
-                # remove all matching
-                "rm ${path_without_value}",
-                # add new entry
-                "set domain[last()+1] ${domain}",
-                "set domain[last()]/type ${type}",
-                "set domain[last()]/item ${item}",
-                "set domain[last()]/value ${value}",
-                ],
+  if ($value == 'remove') {
+    augeas { "${entry_name}":
+      context => $context,
+      onlyif  => "match ${path_without_value} size != 0",
+      changes => [
+                  # remove all matching
+                  "rm ${path_without_value}",
+                  ],
+    }
+  }
+  else {
+    augeas { "${entry_name}":
+      context => $context,
+      onlyif  => "match ${path_with_value} size == 0",
+      changes => [
+                  # remove all matching
+                  "rm ${path_without_value}",
+                  # add new entry
+                  "set domain[last()+1] ${domain}",
+                  "set domain[last()]/type ${type}",
+                  "set domain[last()]/item ${item}",
+                  "set domain[last()]/value ${value}",
+                  ],
+    }
   }
 }
